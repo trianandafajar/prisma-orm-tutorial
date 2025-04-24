@@ -18,18 +18,15 @@ const handleError = (res, error) => {
 };
 
 app.post("/user", [
-  // Input validation
   body("username").isString().withMessage("Username is required"),
   body("password").isString().withMessage("Password is required"),
 ], async (req, res) => {
-  // Validation check
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).send({ success: false, errors: errors.array() });
   }
 
   try {
-    // Hash password before storing it
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const data = await prisma.user.create({
       data: {
@@ -51,7 +48,7 @@ app.post("/profile", async (req, res) => {
         name: "Pojok Code",
         address: "jl. flamboyan no 44 Kembangan jakarta Barat",
         phone: "081234567890",
-        userId: 1, // This should be dynamic if possible
+        userId: 1,
       },
     });
     res.send({ success: true, data });
@@ -64,11 +61,11 @@ app.put("/update", async (req, res) => {
   try {
     const data = await prisma.user.update({
       where: {
-        id: 1, // Should be dynamic, potentially coming from req.params or req.body
+        id: 1,
       },
       data: {
         username: "pcodetest",
-        password: "123", // Hash this before saving it!
+        password: "123", // This should be hashed like in the /user route
       },
     });
     res.send({ success: true, data });
@@ -81,7 +78,7 @@ app.delete("/delete", async (req, res) => {
   try {
     const data = await prisma.user.delete({
       where: {
-        id: 2, // Dynamic ID, ideally coming from req.params
+        id: 2,
       },
     });
     res.send({ success: true, data });
@@ -111,7 +108,7 @@ app.post("/insert-post", async (req, res) => {
           title: "Post Title",
           published: true,
           content: "Post Body",
-          authorId: 1, // Dynamic authorId could be passed here
+          authorId: 1,
         },
       });
       await prisma.categoriesOnPosts.create({
